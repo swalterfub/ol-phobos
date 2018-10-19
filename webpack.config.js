@@ -2,6 +2,8 @@ const path = require('path');
 
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const cesiumSource = 'node_modules/cesium/Source';
+const cesiumWorkers = '../Build/Cesium/Workers';
 
 module.exports = {
 	context: __dirname,
@@ -11,6 +13,16 @@ module.exports = {
 	output: {
 		filename: '[name].js',
 		path: path.resolve(__dirname, 'dist'),
+		// Needed to compile multiline strings in Cesium
+		sourcePrefix: ''
+	},
+	amd: {
+		// Enable webpack-friendly use of require in Cesium
+		toUrlUndefined: true
+	},
+	node: {
+		// Resolve node module use of fs
+		fs: 'empty'
 	},
 	module: {
 	  rules: [{
@@ -28,6 +40,12 @@ module.exports = {
 	],
 	devServer: {
 		contentBase: path.join(__dirname, "dist")
+	},
+	resolve: {
+		alias: {
+			// Cesium module name
+			cesium: path.resolve(__dirname, cesiumSource)
+		}
 	}
 };
 
